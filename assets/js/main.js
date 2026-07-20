@@ -1,41 +1,50 @@
 /* ═══════════════════════════════════════════════════════════════
-   GLOBAL MARKETING · main.js
+   GLOBAL MARKETING · main.js · v2
    Vanilla JS · sin dependencias · compatible iOS Safari
-   Las 4 animaciones solicitadas están marcadas con banners
-   numerados para integrarlas por partes si se desea.
+   Novedades v2: lightbox con navegación ← → entre fotos y videos,
+   pinch-zoom en móvil (solo sobre la foto, no la página),
+   botón "ampliar" en reels y barra de progreso de scroll.
    ═══════════════════════════════════════════════════════════════ */
 (function () {
   'use strict';
 
-  /* Detección global de reduced-motion (se consulta en cada módulo) */
   var REDUCED = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   /* ── CONFIG ──────────────────────────────────────────────────
-     APPS_SCRIPT_URL: cuando Carolina tenga el endpoint de Google
-     Apps Script (Sheets), pegar aquí la URL /exec. Mientras esté
-     vacío, el formulario usa el fallback de WhatsApp (el lead
-     llega igual, por chat). */
+     APPS_SCRIPT_URL: URL /exec del Apps Script (Sheets de Carolina).
+     Vacía → fallback WhatsApp (el lead llega igual, por chat). */
   var APPS_SCRIPT_URL = '';
   var WA_NUMBER = '51918057349';
-
   function waLink(msg) {
     return 'https://wa.me/' + WA_NUMBER + '?text=' + encodeURIComponent(msg);
   }
 
   /* ════════════════════════════════════════════════════════════
-     NAV · fondo sólido al hacer scroll + menú móvil
+     BARRA DE PROGRESO DE SCROLL (rAF, sin layout thrashing)
+     ════════════════════════════════════════════════════════════ */
+  var progressBar = document.getElementById('scrollProgress');
+  var ticking = false;
+  function updateProgress() {
+    var max = document.documentElement.scrollHeight - window.innerHeight;
+    progressBar.style.width = (max > 0 ? (window.scrollY / max) * 100 : 0) + '%';
+    ticking = false;
+  }
+  window.addEventListener('scroll', function () {
+    if (!ticking) { requestAnimationFrame(updateProgress); ticking = true; }
+  }, { passive: true });
+  updateProgress();
+
+  /* ════════════════════════════════════════════════════════════
+     NAV
      ════════════════════════════════════════════════════════════ */
   var nav = document.getElementById('nav');
   var burger = document.getElementById('burger');
   var mobileMenu = document.getElementById('mobileMenu');
-
   function onScrollNav() {
-    if (window.scrollY > 30) nav.classList.add('scrolled');
-    else nav.classList.remove('scrolled');
+    nav.classList.toggle('scrolled', window.scrollY > 30);
   }
   window.addEventListener('scroll', onScrollNav, { passive: true });
   onScrollNav();
-
   function toggleMenu(force) {
     var open = typeof force === 'boolean' ? force : !mobileMenu.classList.contains('open');
     mobileMenu.classList.toggle('open', open);
@@ -49,11 +58,8 @@
 
   /* ════════════════════════════════════════════════════════════
      ANIMACIÓN 2 · REVEAL PROGRESIVO CON SCROLL
-     ─ IntersectionObserver, threshold 0.15
-     ─ opacity 0→1 + translateY(20px)→0 (definido en CSS)
-     ─ Se dispara UNA sola vez por elemento (unobserve)
-     ─ data-delay="120" en el HTML escalona tarjetas hermanas
-       (se inyecta como variable CSS --rd)
+     IntersectionObserver (threshold .15) → .revealed una sola vez.
+     data-delay="120" escalona hermanos vía variable CSS --rd.
      ════════════════════════════════════════════════════════════ */
   var revealEls = document.querySelectorAll('.reveal');
   if ('IntersectionObserver' in window && !REDUCED) {
@@ -64,18 +70,17 @@
           var delay = el.getAttribute('data-delay');
           if (delay) el.style.setProperty('--rd', delay + 'ms');
           el.classList.add('revealed');
-          revealObs.unobserve(el); /* una sola vez: no repite al re-scrollear */
+          revealObs.unobserve(el);
         }
       });
     }, { threshold: 0.15, rootMargin: '0px 0px -6% 0px' });
     revealEls.forEach(function (el) { revealObs.observe(el); });
   } else {
-    /* Sin soporte o reduced-motion → visible de inmediato */
     revealEls.forEach(function (el) { el.classList.add('revealed'); });
   }
 
   /* ════════════════════════════════════════════════════════════
-     CONTADORES DEL HERO (respetan reduced-motion)
+     CONTADORES DEL HERO
      ════════════════════════════════════════════════════════════ */
   function animateCounter(el) {
     var target = parseFloat(el.getAttribute('data-count'));
@@ -86,7 +91,7 @@
     function frame(ts) {
       if (!start) start = ts;
       var p = Math.min((ts - start) / DUR, 1);
-      var eased = 1 - Math.pow(1 - p, 3); /* easeOutCubic */
+      var eased = 1 - Math.pow(1 - p, 3);
       el.textContent = (target * eased).toFixed(decimals) + suffix;
       if (p < 1) requestAnimationFrame(frame);
     }
@@ -106,14 +111,8 @@
 
   /* ════════════════════════════════════════════════════════════
      ANIMACIÓN 3 · FADE-IN + ZOOM-OUT DEL VIDEO DE ELENA
-     ─ Mismo patrón IntersectionObserver (threshold .35)
-     ─ CSS: .video-shell arranca en scale(1.05)/opacity 0 y
-       .video-in lo lleva a scale(1)/opacity 1 en ~700ms ease-out
-     ─ Coordinación con autoplay: el play() se lanza ~180ms
-       después de iniciar la transición para que el video ya
-       esté en movimiento cuando el zoom aterriza (sin salto).
-     ─ Al salir del viewport el video se pausa (ahorro batería).
-     ─ Autoplay siempre muted + playsinline (requisito iOS).
+     Observer (threshold .35) → .video-in; autoplay coordinado
+     (~180ms tras iniciar la transición). Pausa fuera de viewport.
      ════════════════════════════════════════════════════════════ */
   var videoShell = document.getElementById('videoShell');
   var elenaVideo = document.getElementById('elenaVideo');
@@ -122,13 +121,12 @@
       entries.forEach(function (entry) {
         if (entry.isIntersecting) {
           videoShell.classList.add('video-in');
-          /* autoplay coordinado con la transición visual */
           setTimeout(function () {
             var p = elenaVideo.play();
-            if (p && p.catch) p.catch(function () { /* autoplay bloqueado: el usuario usa controles */ });
+            if (p && p.catch) p.catch(function () {});
           }, REDUCED ? 0 : 180);
-        } else {
-          if (!elenaVideo.paused) elenaVideo.pause();
+        } else if (!elenaVideo.paused) {
+          elenaVideo.pause();
         }
       });
     }, { threshold: 0.35 });
@@ -136,22 +134,17 @@
   }
 
   /* ════════════════════════════════════════════════════════════
-     PANEL TESTIMONIOS · video ⇄ carrusel escrito
-     "Ver más testimonios" desvanece el video (y lo pausa) y
-     muestra el carrusel; "Volver al video" invierte el flujo.
+     PANEL TESTIMONIOS · video ⇄ carrusel
      ════════════════════════════════════════════════════════════ */
   var testiVideoPanel = document.getElementById('testiVideoPanel');
   var testiCarousel = document.getElementById('testiCarousel');
-  var btnMore = document.getElementById('btnMoreTesti');
-  var btnBack = document.getElementById('btnBackVideo');
-
-  btnMore.addEventListener('click', function () {
+  document.getElementById('btnMoreTesti').addEventListener('click', function () {
     elenaVideo.pause();
     testiVideoPanel.style.display = 'none';
     testiCarousel.classList.add('active');
     syncCarHeight(false);
   });
-  btnBack.addEventListener('click', function () {
+  document.getElementById('btnBackVideo').addEventListener('click', function () {
     testiCarousel.classList.remove('active');
     testiVideoPanel.style.display = '';
     videoShell.classList.add('video-in');
@@ -161,23 +154,15 @@
 
   /* ════════════════════════════════════════════════════════════
      ANIMACIÓN 4 · CARRUSEL DE TESTIMONIOS ESCRITOS
-     ─ 100% manual: flechas + dots, sin auto-avance
-     ─ Tarjetas apiladas en la MISMA celda de grid (grid-area)
-       → nunca hay salto de layout ni superposición abrupta
-     ─ Saliente: .leaving  → opacity 1→0 + translateX(-30px)
-       Entrante: .current  → opacity 0→1 + translateX(30px→0)
-       (380ms ease-in-out, definido en CSS)
-     ─ El alto del viewport se mide y anima (transition height)
-       para adaptarse al contenido de cada tarjeta con fluidez.
-     ─ Lock anti-doble-clic durante la transición.
+     Manual · tarjetas apiladas en la misma grid-area · saliente
+     .leaving (X→-30px) · entrante .current (X:30→0) · 380ms ·
+     altura animada · lock anti doble clic.
      ════════════════════════════════════════════════════════════ */
   var carViewport = document.getElementById('carViewport');
   var cards = Array.prototype.slice.call(carViewport.querySelectorAll('.tcard'));
   var dotsWrap = document.getElementById('carDots');
-  var current = 0;
-  var animating = false;
+  var current = 0, animating = false;
 
-  /* Dots generados según el número de tarjetas */
   cards.forEach(function (_, i) {
     var d = document.createElement('button');
     d.className = 'tcar-dot' + (i === 0 ? ' active' : '');
@@ -193,47 +178,34 @@
       var prev = carViewport.style.transition;
       carViewport.style.transition = 'none';
       carViewport.style.height = h + 'px';
-      void carViewport.offsetHeight; /* reflow para reactivar transición */
+      void carViewport.offsetHeight;
       carViewport.style.transition = prev;
     } else {
       carViewport.style.height = h + 'px';
     }
   }
-
   function goTo(next) {
     if (animating || next === current || !cards[next]) return;
     animating = true;
-    var out = cards[current];
-    var incoming = cards[next];
-
+    var out = cards[current], incoming = cards[next];
     if (REDUCED) {
-      /* Reduced motion: cambio instantáneo, sin slide */
       out.classList.remove('current');
       incoming.classList.add('current');
-      current = next;
-      updateDots();
-      syncCarHeight(false);
-      animating = false;
-      return;
+      current = next; updateDots(); syncCarHeight(false);
+      animating = false; return;
     }
-
-    out.classList.add('leaving');       /* opacity→0, X→-30px */
+    out.classList.add('leaving');
     out.classList.remove('current');
-    incoming.classList.add('current');  /* desde X:30px → 0 */
-    syncCarHeight(true);                /* altura acompaña el cambio */
-
+    incoming.classList.add('current');
+    syncCarHeight(true);
     setTimeout(function () {
-      out.classList.remove('leaving');  /* reset al estado base (X:30px, oculta) */
-      current = next;
-      updateDots();
-      animating = false;
-    }, 400); /* ligeramente > 380ms de la transición CSS */
+      out.classList.remove('leaving');
+      current = next; updateDots(); animating = false;
+    }, 400);
   }
-
   function updateDots() {
     dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
   }
-
   document.getElementById('carPrev').addEventListener('click', function () {
     goTo((current - 1 + cards.length) % cards.length);
   });
@@ -245,7 +217,7 @@
   });
 
   /* ════════════════════════════════════════════════════════════
-     TABS (servicios y portafolio) — patrón único reutilizable
+     TABS
      ════════════════════════════════════════════════════════════ */
   function initTabs(tablistId) {
     var list = document.getElementById(tablistId);
@@ -256,10 +228,7 @@
         var target = tab.getAttribute('data-tab');
         tabs.forEach(function (t) { t.classList.toggle('active', t === tab); });
         document.querySelectorAll('[data-panel-group="' + tablistId + '"]')
-          .forEach(function (p) {
-            p.classList.toggle('active', p.id === target);
-          });
-        /* pausa cualquier reel al cambiar de pestaña */
+          .forEach(function (p) { p.classList.toggle('active', p.id === target); });
         pauseAllReels();
       });
     });
@@ -268,10 +237,9 @@
   initTabs('pfTabs');
 
   /* ════════════════════════════════════════════════════════════
-     REELS · click-to-play (preload none → carga bajo demanda)
-     Un solo reel activo a la vez para no saturar memoria móvil.
+     REELS · click-to-play + botón "ampliar" (lightbox)
      ════════════════════════════════════════════════════════════ */
-  var reels = document.querySelectorAll('.reel');
+  var reels = Array.prototype.slice.call(document.querySelectorAll('.reel'));
   function pauseAllReels(except) {
     reels.forEach(function (r) {
       var v = r.querySelector('video');
@@ -281,6 +249,7 @@
   reels.forEach(function (reel) {
     var video = reel.querySelector('video');
     var overlay = reel.querySelector('.reel-play');
+    var expand = reel.querySelector('.reel-expand');
     overlay.addEventListener('click', function () {
       pauseAllReels(video);
       reel.classList.add('playing');
@@ -288,17 +257,21 @@
       var p = video.play();
       if (p && p.catch) p.catch(function () {});
     });
-    video.addEventListener('pause', function () {
-      if (video.currentTime > 0 && !video.ended) return; /* pausa del usuario: mantener controles */
-    });
     video.addEventListener('ended', function () {
       reel.classList.remove('playing');
       video.controls = false;
     });
+    if (expand) {
+      expand.addEventListener('click', function (e) {
+        e.stopPropagation();
+        pauseAllReels();
+        openLightboxFrom(reel);
+      });
+    }
   });
 
   /* ════════════════════════════════════════════════════════════
-     GALERÍA DE GUSTAVO · filtros + lightbox
+     GALERÍA · filtros por categoría
      ════════════════════════════════════════════════════════════ */
   var chips = document.querySelectorAll('.chip[data-filter]');
   var galItems = document.querySelectorAll('.gal-item');
@@ -313,51 +286,206 @@
     });
   });
 
+  /* ════════════════════════════════════════════════════════════
+     LIGHTBOX v2 · lista de medios + teclado + pinch-zoom
+     ─ La lista se construye al abrir, según el panel activo:
+       · Contenido & Reels → 4 imágenes + 8 videos (orden DOM)
+       · Fotografía → solo las fotos visibles del filtro actual
+     ─ ← → navegan (teclado y botones) entre fotos Y videos
+     ─ Zoom SOLO sobre la foto (no la página):
+       · móvil: pellizco para acercar (1×–4×) + arrastre para
+         desplazarse + doble toque para alternar 1×/2.5×
+       · escritorio: doble clic alterna zoom
+       touch-action:none en el stage bloquea el zoom del navegador.
+     ════════════════════════════════════════════════════════════ */
   var lightbox = document.getElementById('lightbox');
-  var lightboxImg = document.getElementById('lightboxImg');
-  function openLightbox(src, alt) {
-    lightboxImg.src = src;
-    lightboxImg.alt = alt || '';
+  var lbStage = document.getElementById('lightboxStage');
+  var lbImg = document.getElementById('lightboxImg');
+  var lbVid = document.getElementById('lightboxVid');
+  var lbCounter = document.getElementById('lbCounter');
+  var mediaList = [], mediaIdx = 0;
+
+  function collect(el) {
+    /* Devuelve descriptor {type, src, poster, alt} para un nodo */
+    if (el.classList.contains('reel')) {
+      var v = el.querySelector('video');
+      return { type: 'video', src: v.getAttribute('src'),
+               poster: v.getAttribute('poster') || '',
+               alt: (el.querySelector('.reel-label') || {}).textContent || '' };
+    }
+    var img = el.querySelector('img');
+    return { type: 'img', src: img.currentSrc || img.src, alt: img.alt || '' };
+  }
+
+  function buildList(fromEl) {
+    var nodes;
+    var fotosPanel = document.getElementById('pfFotos');
+    if (fotosPanel && fotosPanel.contains(fromEl)) {
+      nodes = Array.prototype.slice.call(
+        fotosPanel.querySelectorAll('.gal-item:not(.hidden)'));
+    } else {
+      nodes = Array.prototype.slice.call(
+        document.querySelectorAll('#pfContenido .pf-item, #pfContenido .reel'));
+    }
+    mediaList = nodes.map(collect);
+    mediaIdx = Math.max(0, nodes.indexOf(fromEl));
+  }
+
+  function renderMedia() {
+    var m = mediaList[mediaIdx];
+    resetZoom();
+    /* detener y liberar el video anterior */
+    lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
+    if (m.type === 'img') {
+      lbVid.style.display = 'none';
+      lbImg.style.display = '';
+      lbImg.src = m.src; lbImg.alt = m.alt;
+    } else {
+      lbImg.style.display = 'none';
+      lbVid.style.display = '';
+      if (m.poster) lbVid.poster = m.poster;
+      lbVid.src = m.src;
+      var p = lbVid.play();
+      if (p && p.catch) p.catch(function () {});
+    }
+    lbCounter.textContent = (mediaIdx + 1) + ' / ' + mediaList.length;
+  }
+
+  function openLightboxFrom(el) {
+    buildList(el);
     lightbox.classList.add('open');
     document.body.style.overflow = 'hidden';
+    renderMedia();
   }
   function closeLightbox() {
     lightbox.classList.remove('open');
     document.body.style.overflow = '';
-    setTimeout(function () { lightboxImg.src = ''; }, 300);
+    lbVid.pause(); lbVid.removeAttribute('src'); lbVid.load();
+    setTimeout(function () { lbImg.src = ''; }, 300);
   }
-  document.querySelectorAll('.gal-item img, .pf-item img').forEach(function (img) {
-    img.parentElement.addEventListener('click', function () {
-      openLightbox(img.currentSrc || img.src, img.alt);
-    });
+  function lbNext() { mediaIdx = (mediaIdx + 1) % mediaList.length; renderMedia(); }
+  function lbPrev() { mediaIdx = (mediaIdx - 1 + mediaList.length) % mediaList.length; renderMedia(); }
+
+  /* Apertura desde imágenes del portafolio y de la galería */
+  document.querySelectorAll('.pf-item, .gal-item').forEach(function (el) {
+    el.addEventListener('click', function () { openLightboxFrom(el); });
+  });
+
+  document.getElementById('lbNext').addEventListener('click', function (e) {
+    e.stopPropagation(); lbNext();
+  });
+  document.getElementById('lbPrev').addEventListener('click', function (e) {
+    e.stopPropagation(); lbPrev();
   });
   lightbox.addEventListener('click', function (e) {
     if (e.target === lightbox || e.target.closest('.lightbox-close')) closeLightbox();
   });
+  /* Teclado: ← → navegan, Esc cierra */
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && lightbox.classList.contains('open')) closeLightbox();
+    if (!lightbox.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (e.key === 'ArrowRight') { e.preventDefault(); lbNext(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); lbPrev(); }
+  });
+
+  /* ── Pinch-zoom + pan + doble toque (solo sobre la imagen) ── */
+  var zScale = 1, zTx = 0, zTy = 0;
+  var pointers = new Map();
+  var pinchStartDist = 0, pinchStartScale = 1;
+  var panLastX = 0, panLastY = 0, lastTapTime = 0;
+
+  function applyZoom() {
+    lbImg.style.transform =
+      'translate(' + zTx + 'px,' + zTy + 'px) scale(' + zScale + ')';
+    lbImg.classList.toggle('zoomed', zScale > 1.02);
+  }
+  function resetZoom() {
+    zScale = 1; zTx = 0; zTy = 0; pointers.clear();
+    lbImg.style.transform = ''; lbImg.classList.remove('zoomed');
+  }
+  function clampPan() {
+    /* límites laxos para no perder la imagen fuera del stage */
+    var maxX = (zScale - 1) * lbImg.offsetWidth / 2;
+    var maxY = (zScale - 1) * lbImg.offsetHeight / 2;
+    zTx = Math.max(-maxX, Math.min(maxX, zTx));
+    zTy = Math.max(-maxY, Math.min(maxY, zTy));
+  }
+  function dist2(a, b) {
+    var dx = a.x - b.x, dy = a.y - b.y;
+    return Math.hypot(dx, dy);
+  }
+  function toggleZoom() {
+    if (zScale > 1.02) { resetZoom(); }
+    else { zScale = 2.5; zTx = 0; zTy = 0; }
+    lbImg.style.transition = 'transform .25s ease-out';
+    applyZoom();
+    setTimeout(function () { lbImg.style.transition = ''; }, 260);
+  }
+
+  lbStage.addEventListener('pointerdown', function (e) {
+    if (e.target !== lbImg) return;
+    lbStage.setPointerCapture && lbStage.setPointerCapture(e.pointerId);
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      var pts = Array.from(pointers.values());
+      pinchStartDist = dist2(pts[0], pts[1]);
+      pinchStartScale = zScale;
+    } else if (pointers.size === 1) {
+      panLastX = e.clientX; panLastY = e.clientY;
+      /* doble toque (touch) */
+      if (e.pointerType === 'touch') {
+        var now = Date.now();
+        if (now - lastTapTime < 300) { toggleZoom(); lastTapTime = 0; }
+        else lastTapTime = now;
+      }
+    }
+  });
+  lbStage.addEventListener('pointermove', function (e) {
+    if (!pointers.has(e.pointerId)) return;
+    pointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (pointers.size === 2) {
+      var pts = Array.from(pointers.values());
+      var d = dist2(pts[0], pts[1]);
+      if (pinchStartDist > 0) {
+        zScale = Math.max(1, Math.min(4, pinchStartScale * d / pinchStartDist));
+        clampPan(); applyZoom();
+      }
+      e.preventDefault();
+    } else if (pointers.size === 1 && zScale > 1.02) {
+      zTx += e.clientX - panLastX;
+      zTy += e.clientY - panLastY;
+      panLastX = e.clientX; panLastY = e.clientY;
+      clampPan(); applyZoom();
+      e.preventDefault();
+    }
+  });
+  function endPointer(e) {
+    pointers.delete(e.pointerId);
+    if (pointers.size < 2) pinchStartDist = 0;
+    if (zScale <= 1.02) resetZoom();
+  }
+  lbStage.addEventListener('pointerup', endPointer);
+  lbStage.addEventListener('pointercancel', endPointer);
+  /* escritorio: doble clic alterna zoom */
+  lbImg.addEventListener('dblclick', function (e) {
+    e.preventDefault(); toggleZoom();
   });
 
   /* ════════════════════════════════════════════════════════════
-     FAQ · acordeón accesible (max-height animada)
+     FAQ · acordeón
      ════════════════════════════════════════════════════════════ */
   document.querySelectorAll('.faq').forEach(function (item) {
     var q = item.querySelector('.faq-q');
     var a = item.querySelector('.faq-a');
     q.addEventListener('click', function () {
       var isOpen = item.classList.contains('open');
-      if (isOpen) {
-        a.style.maxHeight = '0px';
-        item.classList.remove('open');
-      } else {
-        a.style.maxHeight = a.scrollHeight + 'px';
-        item.classList.add('open');
-      }
+      if (isOpen) { a.style.maxHeight = '0px'; item.classList.remove('open'); }
+      else { a.style.maxHeight = a.scrollHeight + 'px'; item.classList.add('open'); }
     });
   });
 
   /* ════════════════════════════════════════════════════════════
-     TOOLTIP del botón flotante (aparece a los 3.5s, se oculta a los 9s)
+     TOOLTIP DEL BOTÓN FLOTANTE
      ════════════════════════════════════════════════════════════ */
   var waTip = document.getElementById('waTip');
   if (waTip && !REDUCED) {
@@ -366,12 +494,7 @@
   }
 
   /* ════════════════════════════════════════════════════════════
-     FORMULARIO DE LEADS
-     1) Si APPS_SCRIPT_URL está configurada → POST (Google Sheets
-        de Carolina) y mensaje de éxito.
-     2) Fallback (hoy): abre WhatsApp con los datos precargados;
-        el lead llega igual al chat de Carolina.
-     Consentimiento (Ley N.º 29733) requerido para enviar.
+     FORMULARIO DE LEADS (Apps Script o fallback WhatsApp)
      ════════════════════════════════════════════════════════════ */
   var form = document.getElementById('leadForm');
   var statusEl = document.getElementById('formStatus');
@@ -381,7 +504,6 @@
     var whatsapp = form.whatsapp.value.trim();
     var mensaje = form.mensaje.value.trim();
     var consent = form.consent.checked;
-
     statusEl.className = 'form-status';
     if (!nombre || !whatsapp) {
       statusEl.textContent = 'Por favor completa tu nombre y tu WhatsApp.';
@@ -391,25 +513,20 @@
       statusEl.textContent = 'Debes aceptar el tratamiento de datos para enviar.';
       statusEl.classList.add('err'); return;
     }
-
     if (APPS_SCRIPT_URL) {
-      var payload = { nombre: nombre, whatsapp: whatsapp, mensaje: mensaje, fecha: new Date().toISOString() };
       fetch(APPS_SCRIPT_URL, {
         method: 'POST', mode: 'no-cors',
         headers: { 'Content-Type': 'text/plain' },
-        body: JSON.stringify(payload)
+        body: JSON.stringify({ nombre: nombre, whatsapp: whatsapp,
+          mensaje: mensaje, fecha: new Date().toISOString() })
       }).then(function () {
         statusEl.textContent = '✓ ¡Recibido! Te escribiremos muy pronto.';
-        statusEl.classList.add('ok');
-        form.reset();
-      }).catch(function () {
-        openWaFallback(nombre, whatsapp, mensaje);
-      });
+        statusEl.classList.add('ok'); form.reset();
+      }).catch(function () { openWaFallback(nombre, whatsapp, mensaje); });
     } else {
       openWaFallback(nombre, whatsapp, mensaje);
     }
   });
-
   function openWaFallback(nombre, whatsapp, mensaje) {
     var txt = 'Hola, soy ' + nombre + ' (WhatsApp: ' + whatsapp + ').' +
       (mensaje ? ' ' + mensaje : ' Quiero más información sobre sus servicios.');
@@ -418,9 +535,7 @@
     window.open(waLink(txt), '_blank');
   }
 
-  /* ════════════════════════════════════════════════════════════
-     AÑO DINÁMICO DEL FOOTER
-     ════════════════════════════════════════════════════════════ */
+  /* ── AÑO DEL FOOTER ── */
   document.getElementById('year').textContent = new Date().getFullYear();
 
 })();

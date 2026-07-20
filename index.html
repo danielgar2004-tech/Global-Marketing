@@ -14,7 +14,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/css/styles.css">
 
 <!-- ══════════════════════════════════════════════════════════
@@ -28,6 +28,7 @@
 <!-- [GA4 — pendiente de propiedad] -->
 </head>
 <body>
+<div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
 
 <!-- ════════════ NAV ════════════ -->
 <header class="nav" id="nav">
@@ -63,6 +64,22 @@
 
 <!-- ════════════ HERO ════════════ -->
 <section class="hero" id="inicio">
+  <!-- Decoración "Antes/Después" · puramente visual -->
+  <svg class="hero-deco deco-right" viewBox="0 0 300 200" fill="none" aria-hidden="true" focusable="false">
+    <defs>
+      <linearGradient id="riseGrad" x1="0" y1="180" x2="280" y2="30" gradientUnits="userSpaceOnUse">
+        <stop offset="0" stop-color="#00C2CB"/><stop offset="1" stop-color="#FF6B2B"/>
+      </linearGradient>
+    </defs>
+    <path class="deco-flat" pathLength="1" d="M12 132 L48 128 L72 140 L104 122 L138 138 L172 124 L208 136 L244 126 L284 134"/>
+    <path class="deco-rise" pathLength="1" stroke="url(#riseGrad)" d="M12 132 C70 128 120 120 168 96 C214 74 244 50 284 30"/>
+    <circle class="deco-dot" cx="284" cy="30" r="6"/>
+  </svg>
+  <svg class="hero-deco deco-left" viewBox="0 0 300 200" fill="none" aria-hidden="true" focusable="false">
+    <path class="deco-flat" pathLength="1" d="M12 132 L48 128 L72 140 L104 122 L138 138 L172 124 L208 136 L244 126 L284 134"/>
+    <path class="deco-rise" pathLength="1" stroke="url(#riseGrad)" d="M12 132 C70 128 120 120 168 96 C214 74 244 50 284 30"/>
+    <circle class="deco-dot" cx="284" cy="30" r="6"/>
+  </svg>
   <div class="container hero-inner">
     <span class="hero-badge hero-stagger d1"><span class="dot"></span> Agencia de marketing digital · Cajamarca, Perú</span>
     <h1 class="hero-stagger d2">No hacemos publicaciones sueltas.<br>Construimos <span class="accent">sistemas que venden</span>.</h1>
@@ -89,11 +106,9 @@
 
 <!-- ════════════ STRIP DE CLIENTES ════════════ -->
 <div class="clients">
-  <div class="container clients-inner">
-    <span class="lbl">Confiaron en nosotros →</span>
-    <span>HazteFeliz</span><span>Las Torres de Huaral</span><span>Vive Libre</span>
-    <span>Quesería Cajamarquina</span><span>FitoSana</span><span>DBel</span>
-    <span>Oasis de la Salud</span><span>Zuleica · Bodas</span>
+  <span class="lbl">Confiaron en nosotros</span>
+  <div class="marquee">
+    <div class="marquee-track"><div class="marquee-group"><span>HazteFeliz</span><span>Las Torres de Huaral</span><span>Grupo Vive Libre</span><span>Quesería Cajamarquina</span><span>FitoSana</span><span>DBel</span><span>Oasis de la Salud</span><span>Zuleica · Bodas</span></div><div class="marquee-group"><span>HazteFeliz</span><span>Las Torres de Huaral</span><span>Grupo Vive Libre</span><span>Quesería Cajamarquina</span><span>FitoSana</span><span>DBel</span><span>Oasis de la Salud</span><span>Zuleica · Bodas</span></div></div>
   </div>
 </div>
 
@@ -471,14 +486,14 @@
 
       <h3 style="font-size:1.05rem;font-weight:800;margin:40px 0 16px" class="reveal">Reels que detienen el scroll</h3>
       <div class="reel-rail reveal">
-        <div class="reel"><video src="assets/video/haztefeliz-1.mp4" poster="assets/poster/haztefeliz-1.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir reel de HazteFeliz"><span class="ring">▶</span></button><span class="reel-label">HazteFeliz</span></div>
-        <div class="reel"><video src="assets/video/haztefeliz-2.mp4" poster="assets/poster/haztefeliz-2.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir reel de HazteFeliz"><span class="ring">▶</span></button><span class="reel-label">HazteFeliz</span></div>
-        <div class="reel"><video src="assets/video/haztefeliz-3.mp4" poster="assets/poster/haztefeliz-3.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir reel de HazteFeliz"><span class="ring">▶</span></button><span class="reel-label">HazteFeliz</span></div>
-        <div class="reel"><video src="assets/video/torres-huaral.mp4" poster="assets/poster/torres-huaral.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir video de Las Torres de Huaral"><span class="ring">▶</span></button><span class="reel-label">Las Torres de Huaral</span></div>
-        <div class="reel"><video src="assets/video/vivelibre-1.mp4" poster="assets/poster/vivelibre-1.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir reel de Vive Libre"><span class="ring">▶</span></button><span class="reel-label">Vive Libre</span></div>
-        <div class="reel"><video src="assets/video/vivelibre-2.mp4" poster="assets/poster/vivelibre-2.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir reel de Vive Libre"><span class="ring">▶</span></button><span class="reel-label">Vive Libre</span></div>
-        <div class="reel"><video src="assets/video/queseria.mp4" poster="assets/poster/queseria.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir reel de Quesería Cajamarquina"><span class="ring">▶</span></button><span class="reel-label">Quesería Cajamarquina</span></div>
-        <div class="reel"><video src="assets/video/boda-zuleica.mp4" poster="assets/poster/boda-zuleica.jpg" preload="none" playsinline></video><button class="reel-play" aria-label="Reproducir reel de bodas"><span class="ring">▶</span></button><span class="reel-label">Zuleica · Bodas</span></div>
+        <div class="reel"><video src="assets/video/haztefeliz-1.mp4" poster="assets/poster/haztefeliz-1.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir reel de HazteFeliz"><span class="ring">▶</span></button><span class="reel-label">HazteFeliz</span></div>
+        <div class="reel"><video src="assets/video/haztefeliz-2.mp4" poster="assets/poster/haztefeliz-2.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir reel de HazteFeliz"><span class="ring">▶</span></button><span class="reel-label">HazteFeliz</span></div>
+        <div class="reel"><video src="assets/video/haztefeliz-3.mp4" poster="assets/poster/haztefeliz-3.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir reel de HazteFeliz"><span class="ring">▶</span></button><span class="reel-label">HazteFeliz</span></div>
+        <div class="reel"><video src="assets/video/torres-huaral.mp4" poster="assets/poster/torres-huaral.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir video de Las Torres de Huaral"><span class="ring">▶</span></button><span class="reel-label">Las Torres de Huaral</span></div>
+        <div class="reel"><video src="assets/video/vivelibre-1.mp4" poster="assets/poster/vivelibre-1.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir reel de Vive Libre"><span class="ring">▶</span></button><span class="reel-label">Vive Libre</span></div>
+        <div class="reel"><video src="assets/video/vivelibre-2.mp4" poster="assets/poster/vivelibre-2.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir reel de Vive Libre"><span class="ring">▶</span></button><span class="reel-label">Vive Libre</span></div>
+        <div class="reel"><video src="assets/video/queseria.mp4" poster="assets/poster/queseria.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir reel de Quesería Cajamarquina"><span class="ring">▶</span></button><span class="reel-label">Quesería Cajamarquina</span></div>
+        <div class="reel"><video src="assets/video/boda-zuleica.mp4" poster="assets/poster/boda-zuleica.jpg" preload="none" playsinline></video><button class="reel-expand" aria-label="Ampliar video">⤢</button><button class="reel-play" aria-label="Reproducir reel de bodas"><span class="ring">▶</span></button><span class="reel-label">Zuleica · Bodas</span></div>
       </div>
     </div>
 
@@ -493,22 +508,22 @@
         <button class="chip" data-filter="arquitectura">Arquitectura</button>
       </div>
       <div class="gal">
-        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-1.jpg" alt="Catedral de Cajamarca" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-2.jpg" alt="Pileta de la plaza, Cajamarca" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-3.jpg" alt="Jardín ornamental" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-4.jpg" alt="Jardín floral" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-5.jpg" alt="Plaza con monumento" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="negocios"><img src="assets/img/portafolio/gustavo/negocios-1.jpg" alt="Tren turístico" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="negocios"><img src="assets/img/portafolio/gustavo/negocios-2.jpg" alt="Vitrina comercial" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="negocios"><img src="assets/img/portafolio/gustavo/negocios-3.jpg" alt="Interior de tienda" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="gastro"><img src="assets/img/portafolio/gustavo/gastro-1.jpg" alt="Alitas BBQ" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="gastro"><img src="assets/img/portafolio/gustavo/gastro-2.jpg" alt="Pizza artesanal" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="gastro"><img src="assets/img/portafolio/gustavo/gastro-3.jpg" alt="Tallarines verdes con pollo" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="productos"><img src="assets/img/portafolio/gustavo/productos-1.jpg" alt="Arreglo floral decorativo" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="productos"><img src="assets/img/portafolio/gustavo/productos-2.jpg" alt="Herramientas de construcción" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="productos"><img src="assets/img/portafolio/gustavo/productos-3.jpg" alt="Plancha a vapor" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="arquitectura"><img src="assets/img/portafolio/gustavo/arquitectura-1.jpg" alt="Interior de centro comercial" loading="lazy" decoding="async"></figure>
-        <figure class="gal-item" data-cat="arquitectura"><img src="assets/img/portafolio/gustavo/arquitectura-2.jpg" alt="Fachada de centro comercial" loading="lazy" decoding="async"></figure>
+        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-1.jpg" alt="Catedral de Cajamarca" loading="lazy" decoding="async"><span class="ov"><span>Lugares y paisajes</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-2.jpg" alt="Pileta de la plaza, Cajamarca" loading="lazy" decoding="async"><span class="ov"><span>Lugares y paisajes</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-3.jpg" alt="Jardín ornamental" loading="lazy" decoding="async"><span class="ov"><span>Lugares y paisajes</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-4.jpg" alt="Jardín floral" loading="lazy" decoding="async"><span class="ov"><span>Lugares y paisajes</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="lugares"><img src="assets/img/portafolio/gustavo/lugares-5.jpg" alt="Plaza con monumento" loading="lazy" decoding="async"><span class="ov"><span>Lugares y paisajes</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="negocios"><img src="assets/img/portafolio/gustavo/negocios-1.jpg" alt="Tren turístico" loading="lazy" decoding="async"><span class="ov"><span>Negocios y empresas</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="negocios"><img src="assets/img/portafolio/gustavo/negocios-2.jpg" alt="Vitrina comercial" loading="lazy" decoding="async"><span class="ov"><span>Negocios y empresas</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="negocios"><img src="assets/img/portafolio/gustavo/negocios-3.jpg" alt="Interior de tienda" loading="lazy" decoding="async"><span class="ov"><span>Negocios y empresas</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="gastro"><img src="assets/img/portafolio/gustavo/gastro-1.jpg" alt="Alitas BBQ" loading="lazy" decoding="async"><span class="ov"><span>Gastronomía</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="gastro"><img src="assets/img/portafolio/gustavo/gastro-2.jpg" alt="Pizza artesanal" loading="lazy" decoding="async"><span class="ov"><span>Gastronomía</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="gastro"><img src="assets/img/portafolio/gustavo/gastro-3.jpg" alt="Tallarines verdes con pollo" loading="lazy" decoding="async"><span class="ov"><span>Gastronomía</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="productos"><img src="assets/img/portafolio/gustavo/productos-1.jpg" alt="Arreglo floral decorativo" loading="lazy" decoding="async"><span class="ov"><span>Productos</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="productos"><img src="assets/img/portafolio/gustavo/productos-2.jpg" alt="Herramientas de construcción" loading="lazy" decoding="async"><span class="ov"><span>Productos</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="productos"><img src="assets/img/portafolio/gustavo/productos-3.jpg" alt="Plancha a vapor" loading="lazy" decoding="async"><span class="ov"><span>Productos</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="arquitectura"><img src="assets/img/portafolio/gustavo/arquitectura-1.jpg" alt="Interior de centro comercial" loading="lazy" decoding="async"><span class="ov"><span>Arquitectura</span><span>⤢</span></span></figure>
+        <figure class="gal-item" data-cat="arquitectura"><img src="assets/img/portafolio/gustavo/arquitectura-2.jpg" alt="Fachada de centro comercial" loading="lazy" decoding="async"><span class="ov"><span>Arquitectura</span><span>⤢</span></span></figure>
       </div>
       <div class="plan-note" style="margin-top:30px">¿Quieres fotos así para tu negocio? <b>Producción presencial en Cajamarca.</b> <a class="btn btn-navy" style="margin-left:12px;min-height:42px;padding:9px 20px;font-size:.82rem" href="https://wa.me/51918057349?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20sesi%C3%B3n%20de%20FOTOS" target="_blank" rel="noopener">Agendar mi sesión</a></div>
     </div>
@@ -707,10 +722,17 @@
   <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 0 0-8.66 15L2 22l5.16-1.32A10 10 0 1 0 12 2Zm5.46 14.12c-.23.65-1.35 1.24-1.86 1.28-.5.05-.97.24-3.26-.68-2.76-1.1-4.53-3.9-4.67-4.08-.14-.18-1.12-1.5-1.12-2.85 0-1.36.71-2.02.96-2.3.25-.28.55-.35.73-.35h.53c.17 0 .4-.06.62.48.23.55.78 1.9.85 2.04.07.14.11.3.02.48-.09.18-.14.3-.27.46l-.41.48c-.14.14-.28.29-.12.56.16.28.72 1.18 1.54 1.92 1.06.94 1.95 1.23 2.23 1.37.28.14.44.12.6-.07.16-.18.69-.8.87-1.08.18-.28.37-.23.62-.14.25.1 1.6.76 1.88.9.28.14.46.2.53.32.07.11.07.65-.16 1.3Z"/></svg>
 </a>
 
-<!-- Lightbox de galería -->
-<div class="lightbox" id="lightbox" role="dialog" aria-modal="true">
+<!-- Lightbox v2 · navegación por teclado (← →) entre fotos y videos + zoom en móvil -->
+<div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Visor de portafolio">
   <button class="lightbox-close" aria-label="Cerrar">✕</button>
-  <img id="lightboxImg" src="" alt="">
+  <span class="lightbox-hint">Usa ← → para navegar · doble toque o pellizca para hacer zoom</span>
+  <button class="lightbox-nav" id="lbPrev" aria-label="Anterior">←</button>
+  <div class="lightbox-stage" id="lightboxStage">
+    <img id="lightboxImg" src="" alt="">
+    <video id="lightboxVid" style="display:none" playsinline controls loop></video>
+  </div>
+  <button class="lightbox-nav" id="lbNext" aria-label="Siguiente">→</button>
+  <span class="lightbox-counter" id="lbCounter"></span>
 </div>
 
 <script src="assets/js/main.js" defer></script>
