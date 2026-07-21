@@ -1,0 +1,25 @@
+ACTUALIZACIÓN v3 — Global Marketing
+====================================
+Cambios: favicon completo · red neuronal animada en "Cómo trabajamos"
+y "Nuestros clientes opinan" · tipografía nueva (Unbounded).
+
+Archivos (estructura 1:1 con tu repo):
+  • index.html               → reemplaza
+  • auditoria.html           → reemplaza (ahora tiene favicon)
+  • assets/css/styles.css    → reemplaza
+  • assets/js/main.js        → reemplaza
+  • assets/favicon/          → carpeta NUEVA, súbela completa
+      favicon.ico, favicon-16.png, favicon-32.png,
+      apple-touch-icon.png, icon-192.png, icon-512.png,
+      site.webmanifest
+
+En GitHub web:
+1. Raíz → Upload files → arrastra index.html y auditoria.html → Commit
+2. assets/css → Upload files → styles.css → Commit
+3. assets/js  → Upload files → main.js → Commit
+4. assets → Add file → Upload files → arrastra la CARPETA favicon
+   completa (o crea assets/favicon y sube los 7 archivos) → Commit
+
+Vercel redepliega solo (~1 min). Recarga con Ctrl+F5.
+Nota: el favicon puede tardar en aparecer en la pestaña por caché
+del navegador; prueba en ventana de incógnito si no lo ves.

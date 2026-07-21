@@ -535,6 +535,115 @@
     window.open(waLink(txt), '_blank');
   }
 
+  /* ════════════════════════════════════════════════════════════
+     RED NEURONAL DECORATIVA (canvas)
+     ─ Partículas que derivan lentamente; se unen con líneas cuya
+       opacidad depende de la distancia (efecto sinapsis).
+     ─ Un rAF global anima todos los lienzos visibles.
+     ─ IntersectionObserver pausa los lienzos fuera de viewport.
+     ─ prefers-reduced-motion → dibuja un fotograma estático.
+     ─ devicePixelRatio para nitidez; se re-dimensiona en resize.
+     ════════════════════════════════════════════════════════════ */
+  (function neuralNetworks() {
+    var canvases = Array.prototype.slice.call(document.querySelectorAll('[data-neuro]'));
+    if (!canvases.length) return;
+
+    var TEAL = '0,194,203';
+    var nets = [];
+
+    function build(canvas) {
+      var ctx = canvas.getContext('2d');
+      var dpr = Math.min(window.devicePixelRatio || 1, 2);
+      var w = 0, h = 0, nodes = [];
+
+      function resize() {
+        var r = canvas.getBoundingClientRect();
+        w = r.width; h = r.height;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        /* densidad proporcional al área, con tope para rendimiento */
+        var count = Math.max(10, Math.min(26, Math.round(w * h / 12000)));
+        nodes = [];
+        for (var i = 0; i < count; i++) {
+          nodes.push({
+            x: Math.random() * w, y: Math.random() * h,
+            vx: (Math.random() - 0.5) * 0.22,
+            vy: (Math.random() - 0.5) * 0.22,
+            r: 1.3 + Math.random() * 1.6
+          });
+        }
+      }
+
+      function frame() {
+        ctx.clearRect(0, 0, w, h);
+        for (var i = 0; i < nodes.length; i++) {
+          var n = nodes[i];
+          n.x += n.vx; n.y += n.vy;
+          if (n.x < 0 || n.x > w) n.vx *= -1;
+          if (n.y < 0 || n.y > h) n.vy *= -1;
+          /* enlaces (sinapsis) */
+          for (var j = i + 1; j < nodes.length; j++) {
+            var m = nodes[j];
+            var dx = n.x - m.x, dy = n.y - m.y;
+            var d = Math.hypot(dx, dy);
+            if (d < 120) {
+              ctx.strokeStyle = 'rgba(' + TEAL + ',' + (0.16 * (1 - d / 120)) + ')';
+              ctx.lineWidth = 1;
+              ctx.beginPath();
+              ctx.moveTo(n.x, n.y); ctx.lineTo(m.x, m.y); ctx.stroke();
+            }
+          }
+        }
+        /* nodos por encima de las líneas */
+        for (var k = 0; k < nodes.length; k++) {
+          var p = nodes[k];
+          ctx.fillStyle = 'rgba(' + TEAL + ',0.55)';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      resize();
+      return { canvas: canvas, resize: resize, frame: frame, visible: false };
+    }
+
+    nets = canvases.map(build);
+
+    /* Pausa/activa según visibilidad de la sección */
+    if ('IntersectionObserver' in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          var net = nets.find(function (n) { return n.canvas === e.target; });
+          if (net) net.visible = e.isIntersecting;
+        });
+      }, { threshold: 0.02 });
+      nets.forEach(function (n) { io.observe(n.canvas); });
+    } else {
+      nets.forEach(function (n) { n.visible = true; });
+    }
+
+    var resizeTimer;
+    window.addEventListener('resize', function () {
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function () {
+        nets.forEach(function (n) { n.resize(); });
+      }, 200);
+    });
+
+    if (REDUCED) {
+      /* Un solo fotograma estático, sin bucle */
+      nets.forEach(function (n) { n.frame(); });
+    } else {
+      (function loop() {
+        for (var i = 0; i < nets.length; i++) {
+          if (nets[i].visible) nets[i].frame();
+        }
+        requestAnimationFrame(loop);
+      })();
+    }
+  })();
+
   /* ── AÑO DEL FOOTER ── */
   document.getElementById('year').textContent = new Date().getFullYear();
 
