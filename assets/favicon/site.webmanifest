@@ -1,0 +1,11 @@
+{
+  "name": "Global Marketing · Digital Ecosystem",
+  "short_name": "Global Marketing",
+  "icons": [
+    { "src": "/assets/favicon/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/assets/favicon/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "theme_color": "#0D1B3E",
+  "background_color": "#0D1B3E",
+  "display": "standalone"
+}
