@@ -114,11 +114,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
   background:url('../img/hero-bg.jpg') center/cover no-repeat}
 .hero-bg::after{content:'';position:absolute;inset:0;
   background:rgba(13,27,62,.32)}
-/* Refuerzo de legibilidad SOLO tras el texto (centro-vertical), sin
-   oscurecer la foto en general: garantiza contraste del texto blanco. */
-.hero-inner::before{content:'';position:absolute;inset:-8% -12%;z-index:-1;
-  background:radial-gradient(ellipse 60% 55% at 50% 48%,
-    rgba(8,15,36,.55),rgba(8,15,36,0) 78%);pointer-events:none}
+/* Refuerzo de legibilidad SOLO tras el texto, sin oscurecer la foto en
+   general. Más denso y algo desplazado hacia abajo, donde va el subtítulo. */
+.hero-inner::before{content:'';position:absolute;inset:-12% -16%;z-index:-1;
+  background:radial-gradient(ellipse 62% 62% at 50% 52%,
+    rgba(8,15,36,.72),rgba(8,15,36,.4) 55%,rgba(8,15,36,0) 82%);
+  pointer-events:none}
 .hero::before,.hero::after{content:'';position:absolute;border-radius:50%;
   filter:blur(90px);opacity:.55;pointer-events:none;will-change:transform}
 .hero::before{width:600px;height:600px;background:rgba(0,194,203,.18);
