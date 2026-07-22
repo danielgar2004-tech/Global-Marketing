@@ -112,6 +112,10 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
    contenido (.hero-inner z-index:2), sin tapar las animaciones. */
 .hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
   background:url('../img/hero-bg.jpg') center/cover no-repeat}
+/* En móvil (≤767px) se usa la imagen vertical con el logo en la pared */
+@media(max-width:767px){
+  .hero-bg{background-image:url('../img/hero-bg-mobile.jpg')}
+}
 .hero-bg::after{content:'';position:absolute;inset:0;
   background:rgba(13,27,62,.32)}
 /* Refuerzo de legibilidad SOLO tras el texto, sin oscurecer la foto en
@@ -120,6 +124,17 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
   background:radial-gradient(ellipse 62% 62% at 50% 52%,
     rgba(8,15,36,.72),rgba(8,15,36,.4) 55%,rgba(8,15,36,0) 82%);
   pointer-events:none}
+/* En móvil el texto es más alto/estrecho: se usa un velo vertical que
+   protege todo el bloque de texto y deja ver la parte inferior de la foto. */
+@media(max-width:767px){
+  .hero-bg::after{background:rgba(13,27,62,.28)}
+  .hero-inner::before{inset:-6% -20%;
+    background:linear-gradient(180deg,
+      rgba(8,15,36,.32) 0%,
+      rgba(8,15,36,.66) 34%,
+      rgba(8,15,36,.66) 72%,
+      rgba(8,15,36,.12) 100%)}
+}
 .hero::before,.hero::after{content:'';position:absolute;border-radius:50%;
   filter:blur(90px);opacity:.55;pointer-events:none;will-change:transform}
 .hero::before{width:600px;height:600px;background:rgba(0,194,203,.18);
