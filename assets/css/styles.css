@@ -113,7 +113,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
 .hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
   background:url('../img/hero-bg.jpg') center/cover no-repeat}
 .hero-bg::after{content:'';position:absolute;inset:0;
-  background:rgba(13,27,62,.25)}
+  background:rgba(13,27,62,.32)}
 /* Refuerzo de legibilidad SOLO tras el texto (centro-vertical), sin
    oscurecer la foto en general: garantiza contraste del texto blanco. */
 .hero-inner::before{content:'';position:absolute;inset:-8% -12%;z-index:-1;
