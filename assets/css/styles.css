@@ -113,8 +113,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
 .hero-bg{position:absolute;inset:0;z-index:0;pointer-events:none;
   background:url('../img/hero-bg.jpg') center/cover no-repeat}
 .hero-bg::after{content:'';position:absolute;inset:0;
-  background:linear-gradient(180deg,rgba(13,27,62,.82),rgba(8,15,36,.9)),
-             radial-gradient(ellipse at 50% 40%,rgba(13,27,62,.55),rgba(13,27,62,.88))}
+  background:linear-gradient(180deg,rgba(13,27,62,.5),rgba(8,15,36,.55)),
+             radial-gradient(ellipse at 50% 40%,rgba(13,27,62,.32),rgba(13,27,62,.6))}
 .hero::before,.hero::after{content:'';position:absolute;border-radius:50%;
   filter:blur(90px);opacity:.55;pointer-events:none;will-change:transform}
 .hero::before{width:600px;height:600px;background:rgba(0,194,203,.18);
