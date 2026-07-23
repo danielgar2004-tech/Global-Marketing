@@ -74,8 +74,14 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
 .nav.scrolled{background:rgba(13,27,62,.9);backdrop-filter:blur(16px);
   -webkit-backdrop-filter:blur(16px);box-shadow:0 4px 30px rgba(0,0,0,.28);padding:9px 0}
 .nav-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}
-.nav-logo img{height:38px;width:auto;display:block}
-@media(min-width:600px){.nav-logo img{height:44px}}
+.nav-logo img{height:52px;width:auto;display:block;
+  transition:height .3s var(--ease-out)}
+@media(min-width:600px){.nav-logo img{height:64px}}
+@media(min-width:1024px){.nav-logo img{height:72px}}
+/* Al hacer scroll el nav se compacta: el logo se reduce un poco */
+.nav.scrolled .nav-logo img{height:46px}
+@media(min-width:600px){.nav.scrolled .nav-logo img{height:54px}}
+@media(min-width:1024px){.nav.scrolled .nav-logo img{height:58px}}
 .nav-links{display:none;align-items:center;gap:26px;list-style:none}
 .nav-links a{color:rgba(255,255,255,.78);font-size:.86rem;font-weight:600;
   position:relative;transition:color .2s;padding:4px 0}
@@ -117,12 +123,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
   .hero-bg{background-image:url('../img/hero-bg-mobile.jpg')}
 }
 .hero-bg::after{content:'';position:absolute;inset:0;
-  background:rgba(13,27,62,.32)}
+  background:rgba(13,27,62,.42)}
 /* Refuerzo de legibilidad SOLO tras el texto, sin oscurecer la foto en
    general. Más denso y algo desplazado hacia abajo, donde va el subtítulo. */
 .hero-inner::before{content:'';position:absolute;inset:-12% -16%;z-index:-1;
   background:radial-gradient(ellipse 62% 62% at 50% 52%,
-    rgba(8,15,36,.72),rgba(8,15,36,.4) 55%,rgba(8,15,36,0) 82%);
+    rgba(8,15,36,.78),rgba(8,15,36,.45) 55%,rgba(8,15,36,0) 82%);
   pointer-events:none}
 /* En móvil el texto es más alto/estrecho: se usa un velo vertical que
    protege todo el bloque de texto y deja ver la parte inferior de la foto. */
@@ -417,9 +423,13 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
   pointer-events:none;will-change:opacity,transform}
 .tcard.current{opacity:1;transform:translateX(0);pointer-events:auto}
 .tcard.leaving{opacity:0;transform:translateX(-30px)}
-.tcard-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
-.tcard-head img{width:56px;height:56px;border-radius:50%;object-fit:cover;
-  border:2px solid var(--teal)}
+.tcard-head{display:flex;align-items:center;gap:18px;margin-bottom:18px}
+.tcard-head img{width:92px;height:92px;border-radius:50%;object-fit:cover;
+  object-position:center top;border:3px solid var(--teal);flex-shrink:0;
+  box-shadow:0 6px 20px rgba(0,194,203,.25)}
+@media(min-width:640px){
+  .tcard-head img{width:120px;height:120px}
+}
 .tcard-head b{display:block;font-size:.97rem;color:#fff}
 .tcard-head span{font-size:.78rem;color:var(--teal)}
 .tcard-views{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--teal);
