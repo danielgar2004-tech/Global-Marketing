@@ -350,6 +350,32 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
 .mini:hover{transform:translateY(-2px);border-color:rgba(0,194,203,.4)}
 .mini b{color:var(--navy);white-space:nowrap;font-family:var(--font-alt)}
 
+/* ── MANTENIMIENTO WEB ──────────────────────────────────────── */
+.maint-head{max-width:760px;margin:56px 0 30px}
+.maint-title{font-family:var(--font-display);font-size:clamp(1.5rem,3.2vw,2.15rem);
+  font-weight:600;line-height:1.18;letter-spacing:-.01em;margin:12px 0 12px}
+.maint-title .accent-teal{color:var(--teal-d)}
+.maint-sub{font-size:clamp(.95rem,1.5vw,1.05rem);color:var(--g-600);max-width:640px}
+.maint-promos{margin-top:24px;padding:22px 26px;border-radius:var(--r-lg);
+  border:1.5px solid rgba(255,107,43,.28);background:rgba(255,107,43,.05)}
+.maint-promos-title{display:block;font-family:var(--font-alt);font-size:.72rem;
+  font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--orange-d);
+  margin-bottom:12px}
+.maint-promos ul{list-style:none;display:grid;gap:9px}
+.maint-promos li{position:relative;padding-left:26px;font-size:.9rem;color:var(--g-700)}
+.maint-promos li::before{content:'★';position:absolute;left:0;top:0;color:var(--orange);
+  font-size:.85rem}
+.maint-foot{margin-top:20px;font-size:.8rem;font-style:italic;color:var(--g-400);
+  line-height:1.6;max-width:760px}
+
+/* ── NOTA PRECIOS INTERNACIONALES ───────────────────────────── */
+.intl-note{margin-top:34px;padding:18px 24px;border-radius:var(--r);
+  background:var(--navy);color:rgba(255,255,255,.8);font-size:.9rem;line-height:1.6;
+  text-align:center}
+.intl-note b{color:#fff}
+.intl-note a{display:inline-block;margin-top:6px;color:var(--teal);font-weight:700}
+.intl-note a:hover{color:#fff}
+
 /* ── AUDITORÍA ──────────────────────────────────────────────── */
 .audit-wrap{display:grid;gap:20px;grid-template-columns:1fr}
 @media(min-width:900px){.audit-wrap{grid-template-columns:1.2fr .8fr}}
@@ -656,8 +682,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none;
 .footer{background:var(--navy-3);color:rgba(255,255,255,.55);padding:52px 0 30px}
 .footer-top{display:grid;gap:30px;grid-template-columns:1fr;
   padding-bottom:34px;border-bottom:1px solid rgba(255,255,255,.07)}
-@media(min-width:768px){.footer-top{grid-template-columns:1.3fr 1fr 1fr}}
-.footer-logo img{height:52px;width:auto;border-radius:6px;margin-bottom:14px}
+@media(min-width:768px){.footer-top{grid-template-columns:1.7fr 1fr 1fr}}
+/* Logo del footer: mismo banner transparente del nav, 3× su tamaño
+   (nav 72px → footer 216px). max-width evita que desborde la columna. */
+.footer-logo img{height:156px;width:auto;max-width:100%;object-fit:contain;
+  display:block;margin-bottom:18px}
+@media(min-width:768px){.footer-logo img{height:216px;margin-bottom:20px}}
 .footer p{font-size:.83rem;line-height:1.65;max-width:320px}
 .footer h4{color:#fff;font-family:var(--font-alt);font-size:.8rem;font-weight:700;
   letter-spacing:.12em;text-transform:uppercase;margin-bottom:14px}
