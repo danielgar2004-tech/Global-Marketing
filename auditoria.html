@@ -190,7 +190,7 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;color:var(--ink);
     <div class="card">
       <div class="eyebrow">Último paso</div>
       <h2>¿A nombre de quién es este diagnóstico?</h2>
-      <p class="sub">Si nos dejas tus datos, guardamos tu resultado y podemos revisar tu perfil real para darte un diagnóstico completo — no solo el express.</p>
+      <p class="sub">Si nos dejas tus datos, guardamos tu resultado y te contamos cuál es el primer paso para arreglar lo que te salió en rojo.</p>
       <div class="f"><label>Tu nombre</label><input id="l_nom" placeholder="Cómo te llamamos"></div>
       <div class="f"><label>Nombre de tu negocio</label><input id="l_neg" placeholder="Ej. Papel en flor"></div>
       <div class="f"><label>Tu WhatsApp</label><input id="l_wa" placeholder="Ej. 918 057 349" inputmode="tel"></div>
@@ -480,11 +480,11 @@ function renderResult(){
 
   h+=`<div class="honest"><h4>Una aclaración honesta</h4>
     <p>Si varias áreas te salieron en rojo, <b>no significa que estés haciendo mal las cosas</b>. Significa que hay margen para crecer, y casi siempre es normal cuando un negocio recién arranca o cuando se hace todo con los recursos que se tienen. Nada de esto se arregla de golpe: se ordena de a poco, empezando por lo que más mueve la aguja.</p>
-    <p style="margin-top:9px">Además, este resultado se basa en cómo ves tú tu negocio. La auditoría completa se hace mirando tu perfil real —tu bio, tus publicaciones, tus tiempos de respuesta— y ahí aparecen las oportunidades que uno no ve desde adentro.</p></div>`;
+    <p style="margin-top:9px">Además, este resultado se basa en cómo ves tú tu negocio. Mirando tu perfil real —tu bio, tu WhatsApp, tus tiempos de respuesta— aparecen oportunidades que uno no ve desde adentro. Por eso el primer paso es ordenar justo eso.</p></div>`;
 
-  h+=`<div class="cta"><h3>¿Quieres la auditoría completa?</h3>
-    <p>Revisamos tu cuenta de verdad y te enviamos el diagnóstico por escrito, con lo que encontramos en cada área y el camino ordenado para tu caso. Es gratis y sin compromiso.</p>
-    <a href="${waLink(sc,leak)}" target="_blank" rel="noopener" class="btn btn-wa">💬 Enviar mi resultado por WhatsApp</a>
+  h+=`<div class="cta"><h3>Da tu primer paso</h3>
+    <p>Este resultado te muestra dónde se te fuga la venta. El primer paso para arreglarlo es <b>Perfil que Vende</b>: ordenamos tu bio, tu Facebook y tu WhatsApp para que quien llegue entienda qué vendes y te escriba sin dudar. Listo en 5 días hábiles.</p>
+    <a href="${waLink(sc,leak)}" target="_blank" rel="noopener" class="btn btn-wa">💬 Escríbenos PERFIL por WhatsApp</a>
     <p class="fine">Te responde Carolina, en persona. Sin robots.</p></div>`;
 
   h+=`<div class="nav" style="margin-top:16px"><button class="btn btn-g" style="flex:1" onclick="restart()">↺ Hacer la auditoría de nuevo</button></div>`;
@@ -493,14 +493,14 @@ function renderResult(){
 }
 
 function waLink(sc,leak){
-  let m='AUDITORIA\n\nHice la auditoría express en su web. Este es mi resultado:\n';
+  let m='PERFIL\n\nHice la auditoría express en su web. Este es mi resultado:\n';
   if(lead.neg) m+=`\nNegocio: ${lead.neg}`;
   if(lead.nom) m+=`\nNombre: ${lead.nom}`;
   if(lead.ciu) m+=`\nCiudad: ${lead.ciu}`;
   m+='\n\n';
   AREAS.forEach(a=>{ m+=`${a.num} ${a.name}: ${LBL[sc[a.id]]}\n`; });
   if(leak) m+=`\nFuga principal: ${leak.name}`;
-  m+='\n\nQuiero la auditoría completa.';
+  m+='\n\nQuiero saber cómo hacer que mi perfil venda.';
   return `https://wa.me/${WA}?text=${encodeURIComponent(m)}`;
 }
 
